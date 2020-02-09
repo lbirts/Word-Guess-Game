@@ -5,13 +5,14 @@ $(document).ready(function() {
     //var blanks = 0;
     var progressWord = [];
     var guessedLetters = [];
-    var userGuess = "";
+    var guess = "";
     var currentWord = "";
     //Counters
     var wins = 0;
     var loses = 0;
     var numGuesses = 0;
     var correctGuess = false;
+    var letterFound = false;
 
     //random word
     function generateRandom() {
@@ -24,13 +25,27 @@ $(document).ready(function() {
 
     // blank start
     function showBlank () {
-        for (var i = 0; i < currentWord.length; i++) {
-            progressWord[i] = " __ ";
+        for (var a = 0; a < currentWord.length; a++) {
+            progressWord[a] = " __ ";
         }
-        document.getElementById("currentWord").textContent = progressWord.join("");
+       // document.getElementById("progress").textContent = progressWord.join("");
         console.log(progressWord)
     }
 
+    //wins 
+    function gameWon() {
+        $("#totalWins").text = wins;
+        $("#staus").text = "Awe too bad, the word was " + currentWord;
+
+    }
+
+    // Loses 
+    function gameLost() {
+        $("#totalLoses").text = loses;
+        $("#status").text = "Congratulations!!"
+        
+    }
+    // restuls 
     function winsAndLoses() {
         $("#totalwins").text = wins;
         $("#totalLoses").text = loses;
@@ -39,17 +54,64 @@ $(document).ready(function() {
     // Resets Game
     function resetGame() {
         numGuesses = currentWord.length + 3;
-        guessedLetters = [];
         currentWord = [];
+        progressWord = [];
+        guessedLetters = [];
         correctGuess = false;
         generateRandom();
         showBlank();
     }
 
+    function endGame() {
+        if (guessedLetters.toStrong() === blanksandWins.toString()) {
+            gameWon();
+        } else if (numGuesses === 0) {
+            gameLost();
+        }
+    }
+
+    //Execution
     resetGame();
     winsAndLoses();
 
-    
+    // // Check Letters
+    // function check() {
+    //     for (var b = 0; b < currentWord.length; b++) {
+    //         if (currentWord[b] !== progressWord[b]) {
+    //             letterFound = false;
+    //         }
+    //    } else {
+    //        letterFound = true;
+    //    }
+    // };
+
+    // keyup
+    document.onkeyup = (function(event) {
+        guess = event.key.toLowerCase()
+        console.log(guess);
+        for (var b = 0; b < currentWord.length; b++) {
+            if (guess = currentWord[b]) {
+                letterFound = true
+            }
+            else {
+                letterFound = false
+            }
+        }
+    })
+
+    // replace letters
+    function replaceLetters() {
+        if (letterFound = true) {
+            $("#progress").text = progressWord.join(" ");
+        }
+        else {
+            $("#guessedLetters").text += 
+            numGuesses--;
+            $("#remainingGuess").text = numGuesses;
+        }
+    }
+
+    //
     
     
 
@@ -60,24 +122,10 @@ $(document).ready(function() {
         $("#guessedLetters").text = guessedLetters.join("");
     }
 
-   //Execution
-    generateRandom();
-    showBlank();
-    resetGame();
-    getResults();
+    // function showLetter(char, str) {
+    //     for (var i = 0; i < str.)
+    // }
 
-    
-
-    function initialGame () {
-        letters = [];
-        progressWord = [];
-        guessedLetters = [];
-        userGuess = "";
-        chosen = "";
-        numGuesses = 10;
-        random();
-        showBlank;
-    }
 
     //You Lose!
     // function gameLost() {
