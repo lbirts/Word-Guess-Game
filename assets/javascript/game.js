@@ -2,21 +2,26 @@ $(document).ready(function() {
     //Global
     var wordList = ["pencil", "calculator", "notebook", "pen", "binder", "paper", "textbook", "laptop", "highlighter", "planner", "flashcards"];
     var storeWord = [];
-    //var blanks = 0;
+    var blanks = 0;
     var progressWord = [];
     var guessedLetters = [];
     var guess = "";
     var currentWord = "";
-    //Counters
-    var wins = 0;
-    var loses = 0;
-    var numGuesses = 0;
     var correctGuess = false;
     var letterFound = false;
+    var answer = [];
+    var compareAnswer = "";
+    var random;
+
+    //Counters
+    var wins = 0;
+    var losses = 0;
+    var numGuesses = 0;
+    
 
     //random word
     function generateRandom() {
-        var random = Math.floor(Math.random() * wordList.length);
+        random = Math.floor(Math.random() * wordList.length);
         currentWord = wordList[random];
         console.log(currentWord);
         // var n = currentWord.length;
@@ -26,116 +31,133 @@ $(document).ready(function() {
     // blank start
     function showBlank () {
         for (var a = 0; a < currentWord.length; a++) {
-            progressWord[a] = " __ ";
+            progressWord.push(" _ ");
+            answer.push(currentWord[a]);
         }
-       // document.getElementById("progress").textContent = progressWord.join("");
+        $("#progress").text(progressWord.join(""));
         console.log(progressWord)
+        compareAnswer = answer.join("");
     }
 
     //wins 
     function gameWon() {
-        $("#totalWins").text = wins;
-        $("#staus").text = "Awe too bad, the word was " + currentWord;
-
+        $("#totalWins").text = wins++;
+        $("#status").text("Congratulations!!!");
     }
 
     // Loses 
     function gameLost() {
-        $("#totalLoses").text = loses;
-        $("#status").text = "Congratulations!!"
-        
+        $("#totalLoses").text = losses++;
+        $("#status").text("Awe too bad, the word was " + currentWord);
     }
-    // restuls 
-    function winsAndLoses() {
-        $("#totalwins").text = wins;
-        $("#totalLoses").text = loses;
+
+    // display results
+    function getResults() {
+        $("#remainingGuesses").text(numGuesses);
+        $("#currentWord").text(progressWord.join(""));
+        $("#guessedLetters").text(guessedLetters.join(""));
+        $("#totalWins").text(wins);
+        $("#totalLoses").text(losses);
     }
 
     // Resets Game
-    function resetGame() {
-        numGuesses = currentWord.length + 3;
+     function resetGame() {
         currentWord = [];
         progressWord = [];
         guessedLetters = [];
         correctGuess = false;
         generateRandom();
         showBlank();
+        numGuesses = currentWord.length + 3;
     }
 
-    function endGame() {
-        if (guessedLetters.toStrong() === blanksandWins.toString()) {
-            gameWon();
-        } else if (numGuesses === 0) {
-            gameLost();
-        }
-    }
-
-    //Execution
     resetGame();
-    winsAndLoses();
+    getResults();
 
-    // // Check Letters
-    // function check() {
-    //     for (var b = 0; b < currentWord.length; b++) {
-    //         if (currentWord[b] !== progressWord[b]) {
-    //             letterFound = false;
-    //         }
-    //    } else {
-    //        letterFound = true;
-    //    }
-    // };
-
-    // keyup
-    document.onkeyup = (function(event) {
-        guess = event.key.toLowerCase()
-        console.log(guess);
-        for (var b = 0; b < currentWord.length; b++) {
-            if (guess = currentWord[b]) {
-                letterFound = true
+    //check Win
+    function checkWin() {
+        var wordGuess = $("#progress").text();
+            if (wordGuess === compareAnswer) {
+                correctGuess = true;
+                if (correctGuess) {
+                    gameWon();
+                    getResults();
+                }
+                else {
+                    gameLost();
+                    getResults();
+                }
             }
-            else {
-                letterFound = false
-            }
-        }
-    })
+    }
 
-    // replace letters
-    function replaceLetters() {
-        if (letterFound = true) {
-            $("#progress").text = progressWord.join(" ");
+    //check Loss
+    function checkLoss() {
+        if (numGuesses === 0) {
+            gameLost();
+            resetGame();
         }
-        else {
-            $("#guessedLetters").text += 
+    }
+
+
+
+    document.onkeyup = function(event) {
+        if (isAlpha(event.key)) {
+            guess = event.key.toLowerCase();
+            console.log(guess);
+            checkLetter();
+            replaceLetters();
+            getResults();
+            checkLoss();
+            checkWin();
+        }
+    }
+
+    // check letter
+    function checkLetter() {
+        if (currentWord.indexOf(guess) < 0) {
             numGuesses--;
-            $("#remainingGuess").text = numGuesses;
+        }
+            if (guessedLetters.indexOf(guess) < 0) {
+                guessedLetters.push(guess + ", ");
+                letterFound = false;
+            } else if (guessedLetters.includes(guess)) {
+                return;
+            }
+    }
+
+    function replaceLetters () {
+        for (let b = 0; b < currentWord.length; b++) {
+            if (guess === currentWord[b]) {
+                progressWord[b] = guess;
+                $("#progress").text(progressWord.join(""));
+                letterFound = true;
+            }
+            if (progressWord.join("") === currentWord) {
+                gameWon();
+                resetGame();
+            }
         }
     }
-
-    //
     
-    
-
-    // display results
-    function getResults() {
-        $("#remainingGuesses").text = numGuesses;
-        //$("#currentWord").text = progressWord.join("");
-        $("#guessedLetters").text = guessedLetters.join("");
+      // Check in keypressed is between A-Z or a-z, used this site for the below expression.
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+    function isAlpha (ch){
+        return /^[A-Z]$/i.test(ch);
     }
+   
 
-    // function showLetter(char, str) {
-    //     for (var i = 0; i < str.)
+    // function endGame() {
+    //     if (currentWord.toString() === progressWord.toString()) {
+    //         gameWon();
+    //     }
+    //     else if (numGuesses === 0) {
+    //         gameLost();
+    //     }
     // }
 
 
-    //You Lose!
-    // function gameLost() {
-    //     $("#status").text = wordList[i]
-    // }
-    var hangMan = {
-        startGame: function(){
-            numGuesses = 10;
-            
-        }
-    }
+    // // function showLetter(char, str) {
+    // //     for (var i = 0; i < str.)
+    // // }
 
 });

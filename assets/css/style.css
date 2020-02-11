@@ -1,0 +1,14 @@
+body {
+    background: url("../images/back.jpg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-weight: bold;
+}
+#progress {
+    font-family: 'Cabin Sketch', cursive;
+    font-size: 34px;
+}
+h1 {
+    font-family: 'Cabin Sketch', cursive;
+}
